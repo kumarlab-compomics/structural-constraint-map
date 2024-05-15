@@ -5,6 +5,8 @@
 start=`date +%s`
 source ~/envs/clustering/bin/activate
 
+home="${HOME}/structural-constraint-map/scripts/one-conformation"
+
 pdb=$1
 
 file="$(basename "$pdb")"
@@ -21,23 +23,23 @@ echo "Done RING"
 ### COMMUNITY DETECTION PRE-PROCESSING ###
 
 echo "Getting number of residues"
-python get_num_residues.py -p $pdb -o $isoform/${isoform}_resnum.txt
+python $home/get_num_residues.py -p $pdb -o $isoform/${isoform}_resnum.txt
 
 echo "Now getting walktrap input file ready"
 module load R
-Rscript walktrap_preprocessing_one_conformation.R $isoform/${pdb}_ringEdges $isoform/${isoform}_resnum.txt $isoform/${isoform}_walktrap_input.txt
+Rscript $home/walktrap_preprocessing_one_conformation.R $isoform/${pdb}_ringEdges $isoform/${isoform}_resnum.txt $isoform/${isoform}_walktrap_input.txt
 echo "Walktrap input ready"
 
 ### COMMUNITY DETECTION ###
 
 echo "Beginning community detection"
-python walktrap_translated_seq.py $isoform/${isoform}_walktrap_input.txt $isoform/${isoform}_walktrap_output.txt
+python $home/walktrap_translated_seq.py $isoform/${isoform}_walktrap_input.txt $isoform/${isoform}_walktrap_output.txt
 echo "Community detection complete"
 
 ### RE-WRITING B-FACTORS in PDB FOR VISUALIZATION ###
 
 echo "Re-writing B-factors in PDB"
-python sub_bfactor_wCommunities.py -c $isoform/${isoform}_walktrap_output.txt -p $pdb -o $isoform/${isoform}_rewritten.pdb
+python $home/sub_bfactor_wCommunities.py -c $isoform/${isoform}_walktrap_output.txt -p $pdb -o $isoform/${isoform}_rewritten.pdb
 echo "Done re-writing B-factors"
 
 #cp to home directory so that I can scp it out
