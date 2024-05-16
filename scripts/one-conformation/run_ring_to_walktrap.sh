@@ -17,7 +17,7 @@ mkdir -p "$isoform"
 
 ### RING ###
 echo "Running RING now"
-ring -i $pdb --best_edge -g 1 --out_dir $isoform
+ring -i $pdb -g 1 --out_dir $isoform
 echo "Done RING"
 
 ### COMMUNITY DETECTION PRE-PROCESSING ###
