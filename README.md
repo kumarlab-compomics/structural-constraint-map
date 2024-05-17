@@ -1,2 +1,14 @@
 # structural-constraint-map
 Building a constraint map that incorporates 3D protein structure and protein motion data.
+
+### Usage
+
+Clone repo into your home directory to use.  
+Run the below command in a directory with your .pdb file. It will generate an output directory there with all the input/output and intermediate files.  
+
+```
+sh ~/structural-constraint-map/scripts/one-conformation/run_ring_to_walktrap.sh <.pdb> <bond_energy/contact>
+```
+
+Will either generate edges using RING (for bond energies) or Contact Map Explorer (for contacts), run community detection using walktrap, then generate a re-written .pdb file with communities in the place of b-factors, to aid in faster visualization. 
+ 
