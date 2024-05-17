@@ -44,6 +44,8 @@ df_be = add_zeros(df_be, n)
 #mat$residue1 = NULL
 #df2=data.frame(t(combn(names(mat),2)), weight=t(mat)[lower.tri(mat)])
 
+df_be = df_be[df_be$residue1 != df_be$residue2,]
+
 write.table(df_be, args[3], col.names = F, sep = ",", row.names =  F, quote = F)
 
 
