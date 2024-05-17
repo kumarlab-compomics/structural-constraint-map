@@ -15,20 +15,33 @@ echo "Beginning processing for ${isoform}"
 
 mkdir -p "$isoform"
 
-### RING ###
-echo "Running RING now"
-ring -i $pdb -g 1 --out_dir $isoform
-echo "Done RING"
+if [ $2 == "bond_energy" ]; then
+	echo "Edges set to BOND ENERGY"
+	### RING ###
+		echo "Running RING now"
+		ring -i $pdb -g 1 --out_dir $isoform
+		echo "Done RING"
 
-### COMMUNITY DETECTION PRE-PROCESSING ###
+	### COMMUNITY DETECTION PRE-PROCESSING ###
 
-echo "Getting number of residues"
-python $home/get_num_residues.py -p $pdb -o $isoform/${isoform}_resnum.txt
+		echo "Getting number of residues"
+		python $home/get_num_residues.py -p $pdb -o $isoform/${isoform}_resnum.txt
 
-echo "Now getting walktrap input file ready"
-module load R
-Rscript $home/walktrap_preprocessing_one_conformation.R $isoform/${pdb}_ringEdges $isoform/${isoform}_resnum.txt $isoform/${isoform}_walktrap_input.txt
-echo "Walktrap input ready"
+		echo "Now getting walktrap input file ready"
+
+		module load R
+		Rscript $home/walktrap_preprocessing_one_conformation.R $isoform/${pdb}_ringEdges $isoform/${isoform}_resnum.txt $isoform/${isoform}_walktrap_input.txt
+		echo "Walktrap input ready"
+
+elif [ $2 == "contact" ]; then
+	echo "Edges set to CONTACT"
+	### COMMUNITY DETECTION PRE-PROCESSING ###
+		python $/home/get_contact_map_edges.py -p $pdb $isoform/${isoform}_walktrap_input.txt
+
+else
+	echo "Please select either bond_energy or contact as the edge for CLI arg 2"
+	exit 1
+fi
 
 ### COMMUNITY DETECTION ###
 
