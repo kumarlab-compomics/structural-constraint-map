@@ -30,7 +30,7 @@ add_zeros <- function(df, seq_len){
   df[is.na(df)] = 0
   df = df %>% rename(scaled_edge = Energy)
   df = df %>% dplyr::select(residue1, residue2, scaled_edge)
-  #df = df %>% group_by(residue1, residue2) %>% slice_max(scaled_edge, with_ties = F)
+ # df = df %>% group_by(residue1, residue2) %>% slice_max(scaled_edge, with_ties = F)
   return(df)
 }
 

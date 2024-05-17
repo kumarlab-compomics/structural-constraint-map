@@ -13,30 +13,32 @@ file="$(basename "$pdb")"
 isoform="${file%%.*}"
 echo "Beginning processing for ${isoform}"
 
-mkdir -p "$isoform"
-
-if [ $2 == "bond_energy" ]; then
+if [[ $2 == "bond_energy" ]]; then
 	echo "Edges set to BOND ENERGY"
+	mkdir -p ${isoform}_bond_energy_weights
+	project_dir=${isoform}_bond_energy_weights 
 	### RING ###
 		echo "Running RING now"
-		ring -i $pdb -g 1 --out_dir $isoform
+		ring -i $pdb --all_edges -g 1 --out_dir $project_dir
 		echo "Done RING"
 
 	### COMMUNITY DETECTION PRE-PROCESSING ###
 
 		echo "Getting number of residues"
-		python $home/get_num_residues.py -p $pdb -o $isoform/${isoform}_resnum.txt
+		python $home/get_num_residues.py -p $pdb -o $project_dir/${isoform}_resnum.txt
 
 		echo "Now getting walktrap input file ready"
 
 		module load R
-		Rscript $home/walktrap_preprocessing_one_conformation.R $isoform/${pdb}_ringEdges $isoform/${isoform}_resnum.txt $isoform/${isoform}_walktrap_input.txt
+		Rscript $home/walktrap_preprocessing_one_conformation.R $project_dir/${pdb}_ringEdges $project_dir/${isoform}_resnum.txt $project_dir/${isoform}_walktrap_input.txt
 		echo "Walktrap input ready"
 
-elif [ $2 == "contact" ]; then
+elif [[ $2 == "contact" ]]; then
+	mkdir -p ${isoform}_contact_weights
+	project_dir=${isoform}_contact_weights
 	echo "Edges set to CONTACT"
 	### COMMUNITY DETECTION PRE-PROCESSING ###
-		python $/home/get_contact_map_edges.py -p $pdb $isoform/${isoform}_walktrap_input.txt
+		python $home/get_contact_map_edges.py -p $pdb -o $project_dir/${isoform}_walktrap_input.txt
 
 else
 	echo "Please select either bond_energy or contact as the edge for CLI arg 2"
@@ -46,17 +48,17 @@ fi
 ### COMMUNITY DETECTION ###
 
 echo "Beginning community detection"
-python $home/walktrap_translated_seq.py $isoform/${isoform}_walktrap_input.txt $isoform/${isoform}_walktrap_output.txt
+python $home/walktrap_translated_seq.py $project_dir/${isoform}_walktrap_input.txt $project_dir/${isoform}_walktrap_output.txt
 echo "Community detection complete"
 
 ### RE-WRITING B-FACTORS in PDB FOR VISUALIZATION ###
 
 echo "Re-writing B-factors in PDB"
-python $home/sub_bfactor_wCommunities.py -c $isoform/${isoform}_walktrap_output.txt -p $pdb -o $isoform/${isoform}_rewritten.pdb
+python $home/sub_bfactor_wCommunities.py -c $project_dir/${isoform}_walktrap_output.txt -p $pdb -o $project_dir/${isoform}_${2}_rewritten.pdb
 echo "Done re-writing B-factors"
 
 #cp to home directory so that I can scp it out
-cp $isoform/${isoform}_rewritten.pdb ~/files_to_scp/pdbs
+cp $project_dir/${isoform}_${2}_rewritten.pdb ~/files_to_scp/pdbs
 
 ### EXIT STATUS CHECK ### from https://stackoverflow.com/questions/26675681/how-to-check-the-exit-status-using-an-if-statement
 EXITCODE=$?
