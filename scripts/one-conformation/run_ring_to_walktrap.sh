@@ -15,8 +15,8 @@ echo "Beginning processing for ${isoform}"
 
 if [[ $2 == "bond_energy" ]]; then
 	echo "Edges set to BOND ENERGY"
-	mkdir -p ${isoform}_bond_energy_weights
-	project_dir=${isoform}_bond_energy_weights 
+	mkdir -p ${isoform}
+	project_dir=${isoform} 
 	### RING ###
 		echo "Running RING now"
 		ring -i $pdb --all_edges -g 1 --out_dir $project_dir
@@ -34,8 +34,8 @@ if [[ $2 == "bond_energy" ]]; then
 		echo "Walktrap input ready"
 
 elif [[ $2 == "contact" ]]; then
-	mkdir -p ${isoform}_contact_weights
-	project_dir=${isoform}_contact_weights
+	mkdir -p ${isoform}
+	project_dir=${isoform}
 	echo "Edges set to CONTACT"
 	### COMMUNITY DETECTION PRE-PROCESSING ###
 		python $home/get_contact_map_edges.py -p $pdb -o $project_dir/${isoform}_walktrap_input.txt
