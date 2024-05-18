@@ -1,4 +1,10 @@
 #!/bin/bash
+#SBATCH -N 1 # Ensure that all cores are on one machine
+#SBATCH -p all
+#SBATCH -c 1
+#SBATCH --mem=200M
+#SBATCH -t 0-00:20 # Runtime in D-HH:MM
+#SBATCH -J run_walktrap
 
 #script to run constraint map steps for each isoform starting with RING to community visualization
 
@@ -58,7 +64,7 @@ python $home/sub_bfactor_wCommunities.py -c $project_dir/${isoform}_walktrap_out
 echo "Done re-writing B-factors"
 
 #cp to home directory so that I can scp it out
-cp $project_dir/${isoform}_${2}_rewritten.pdb ~/files_to_scp/pdbs
+#cp $project_dir/${isoform}_${2}_rewritten.pdb ~/files_to_scp/pdbs
 
 ### EXIT STATUS CHECK ### from https://stackoverflow.com/questions/26675681/how-to-check-the-exit-status-using-an-if-statement
 EXITCODE=$?
