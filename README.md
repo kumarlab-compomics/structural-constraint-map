@@ -10,5 +10,11 @@ Run the below command in a directory with your .pdb file. It will generate an ou
 sh ~/structural-constraint-map/scripts/one-conformation/run_ring_to_walktrap.sh <.pdb> <bond_energy/contact>
 ```
 
-Will either generate edges using RING (for bond energies) or Contact Map Explorer (for contacts), run community detection using walktrap, then generate a re-written .pdb file with communities in the place of b-factors, to aid in faster visualization. 
- 
+Will either generate edges using RING (for bond energies) or Contact Map Explorer (for contacts), run community detection using walktrap, then generate a re-written .pdb file with communities in the place of b-factors, to aid in faster visualization.   
+
+If you want to run multiple samples, use the batch script:  
+
+```
+sh ~/structural-constraint-map/scripts/one-conformation/batch_run.sh <directory with pdb files> <bond_energy/contact>
+```
+
