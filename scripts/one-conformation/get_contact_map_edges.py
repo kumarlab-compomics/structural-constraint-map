@@ -11,7 +11,7 @@ args = parser.parse_args()
 
 traj = md.load(args.pdb)
 
-frame_contacts = ContactFrequency(traj[0])
+frame_contacts = ContactFrequency(traj)
 df = frame_contacts.residue_contacts.df
 
 df = df.fillna(0)
