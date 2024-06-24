@@ -1,0 +1,7 @@
+numpy==1.23.2
+scipy==1.12.0
+pandas==2.2.1
+contact_map==0.7.0
+mdtraj==1.9.9
+matplotlib==3.8.4
+ProDy==2.4.1
