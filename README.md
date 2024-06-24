@@ -18,3 +18,14 @@ If you want to run multiple samples, use the batch script:
 sh ~/structural-constraint-map/scripts/one-conformation/batch_run.sh <directory with pdb files> <bond_energy/contact>
 ```
 
+If you want to count the number of communities in a directory containing output from the runs above, run this:  
+
+```
+sh ~/structural-constraint-map/scripts/utils/get_num_communities.sh
+```
+
+If you want to create RMSD plots for the output from MD or AlphaFlow, run this:  
+
+```
+sh ~/structural-constraint-map/scripts/utils/rmsd_wrapper.sh
+```
