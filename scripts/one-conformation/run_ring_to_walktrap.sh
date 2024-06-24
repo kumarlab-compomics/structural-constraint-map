@@ -1,7 +1,7 @@
 #!/bin/bash
 #SBATCH -N 1 # Ensure that all cores are on one machine
 #SBATCH -c 1
-#SBATCH --mem=500M
+#SBATCH --mem=750M
 #SBATCH -t 0-00:20 # Runtime in D-HH:MM
 #SBATCH -J run_walktrap
 
