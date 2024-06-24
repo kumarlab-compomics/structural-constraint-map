@@ -8,7 +8,7 @@
 #script to run constraint map steps for each isoform starting with RING to community visualization
 
 start=`date +%s`
-source /home/nhanafi/projects/def-sushant/nhanafi/envs/md/bin/activate
+source $3
 
 home="${HOME}/structural-constraint-map/scripts/one-conformation"
 

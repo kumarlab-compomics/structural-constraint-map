@@ -1,5 +1,5 @@
 
-source /lustre06/project/6069023/nhanafi/envs/md/bin/activate
+source $1
 
 for i in *.pdb
 do
