@@ -27,12 +27,15 @@ pdb=$1
 
 file="$(basename "$pdb")"
 isoform="${file%%.*}"
+enst=$(awk '{split($0, a, "[_.]"); print a[1]}' <<< "$file")
+gene=$(awk '{split($0, a, "[_.]"); print a[2]}' <<< "$file")
+
 echo "Beginning processing for ${isoform}"
 
 if [[ $2 == "bond_energy" ]]; then
 	echo "Edges set to BOND ENERGY"
-	mkdir -p ${isoform}
-	project_dir=${isoform} 
+	mkdir -p ${gene}/${enst}
+	project_dir=${gene}/${enst}
 	### RING ###
 		echo "Running RING now"
 		ring -i $pdb --all_edges -g 1 --out_dir $project_dir
@@ -50,8 +53,8 @@ if [[ $2 == "bond_energy" ]]; then
 		echo "Walktrap input ready"
 
 elif [[ $2 == "contact" ]]; then
-	mkdir -p ${isoform}
-	project_dir=${isoform}
+	mkdir -p ${gene}/${enst}
+	project_dir=${gene}/${enst}
 	echo "Edges set to CONTACT"
 	### COMMUNITY DETECTION PRE-PROCESSING ###
 		python $home/get_contact_map_edges.py -p $pdb -o $project_dir/${isoform}_walktrap_input.txt
