@@ -8,7 +8,18 @@
 #script to run constraint map steps for each isoform starting with RING to community visualization
 
 start=`date +%s`
-source $3
+
+if [[ $3 == "beluga" ]]; then
+	source /home/nhanafi/projects/def-sushant/nhanafi/envs/structural_constraint/bin/activate
+elif [[ $3 == "cedar" ]]; then
+	source /project/6069023/structural_constraint/envs/network_env/bin/activate
+elif [[ $3 == "narval" ]]; then
+	source /home/nhanafi/projects/def-sushant/nhanafi/envs/md/bin/activate
+elif [[ $4 == "h4h" ]]; then
+	source ~/envs/clustering/bin/activate
+else
+	echo "Please select one of beluga, cedar, narval or h4h for as CLI arg #3 in order to load the correct venv"
+fi
 
 home="${HOME}/structural-constraint-map/scripts/one-conformation"
 
@@ -16,12 +27,15 @@ pdb=$1
 
 file="$(basename "$pdb")"
 isoform="${file%%.*}"
+enst=$(awk '{split($0, a, "[_.]"); print a[1]}' <<< "$file")
+gene=$(awk '{split($0, a, "[_.]"); print a[2]}' <<< "$file")
+
 echo "Beginning processing for ${isoform}"
 
 if [[ $2 == "bond_energy" ]]; then
 	echo "Edges set to BOND ENERGY"
-	mkdir -p ${isoform}
-	project_dir=${isoform} 
+	mkdir -p ${gene}/${enst}
+	project_dir=${gene}/${enst}
 	### RING ###
 		echo "Running RING now"
 		ring -i $pdb --all_edges -g 1 --out_dir $project_dir
@@ -39,8 +53,8 @@ if [[ $2 == "bond_energy" ]]; then
 		echo "Walktrap input ready"
 
 elif [[ $2 == "contact" ]]; then
-	mkdir -p ${isoform}
-	project_dir=${isoform}
+	mkdir -p ${gene}/${enst}
+	project_dir=${gene}/${enst}
 	echo "Edges set to CONTACT"
 	### COMMUNITY DETECTION PRE-PROCESSING ###
 		python $home/get_contact_map_edges.py -p $pdb -o $project_dir/${isoform}_walktrap_input.txt
