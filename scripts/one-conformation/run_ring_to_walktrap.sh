@@ -4,6 +4,7 @@
 #SBATCH --mem=750M
 #SBATCH -t 0-00:20 # Runtime in D-HH:MM
 #SBATCH -J run_walktrap
+#SBATCH --output=/cluster/projects/kumargroup/isoform-constraint-map/structure/sbatch_out/%j.out
 
 #script to run constraint map steps for each isoform starting with RING to community visualization
 
@@ -15,7 +16,7 @@ elif [[ $3 == "cedar" ]]; then
 	source /project/6069023/structural_constraint/envs/network_env/bin/activate
 elif [[ $3 == "narval" ]]; then
 	source /home/nhanafi/projects/def-sushant/nhanafi/envs/md/bin/activate
-elif [[ $4 == "h4h" ]]; then
+elif [[ $3 == "h4h" ]]; then
 	source ~/envs/clustering/bin/activate
 else
 	echo "Please select one of beluga, cedar, narval or h4h for as CLI arg #3 in order to load the correct venv"
