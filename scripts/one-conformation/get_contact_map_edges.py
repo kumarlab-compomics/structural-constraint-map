@@ -11,11 +11,11 @@ args = parser.parse_args()
 
 traj = md.load(args.pdb)
 
-frame_contacts = ContactFrequency(traj)
+frame_contacts = ContactFrequency(traj,n_neighbors_ignored=0)
 df = frame_contacts.residue_contacts.df
 
 df = df.fillna(0)
-df = df.where(np.tril(np.ones(df.shape)).astype(bool))
+df = df.where(np.triu(np.ones(df.shape)).astype(bool))
 df = df.stack().reset_index()
 df.columns = ['residue1','residue2','weight']
 
