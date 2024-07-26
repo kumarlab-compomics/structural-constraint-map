@@ -1,0 +1,42 @@
+from prody import *
+import pandas as pd
+import argparse
+import os
+
+parser = argparse.ArgumentParser()
+parser.add_argument("-c", "--communities", help = "walktrap output")
+parser.add_argument("-p", "--pdb", help = "pdb file")
+parser.add_argument("-o", "--output", help = "name of output file")
+args = parser.parse_args()
+
+colnames = ['resnum', 'community']
+colnames_in = ["res1","res2","edge"]
+df = pd.read_csv(args.communities, header = None, names = colnames)
+pdb = parsePDB(args.pdb)
+
+filename= os.path.basename(args.communities)
+s = filename.split('_')
+
+#get transcript name
+transcript = '_'.join(s[:2])
+
+a=pdb.getResnums()
+b=pdb.getResnames()
+
+df_pdb = pd.DataFrame()
+#convert arrays into df columns for pd operations
+df_pdb = pd.DataFrame()
+df_pdb['resnum']=pd.Series(a)
+df_pdb['resname']=pd.Series(b)
+df_pdb['transcript'] = transcript
+
+df_pdb = df_pdb.drop_duplicates()
+
+#merging with communities
+merged_df =  df.merge(df_pdb, on = 'resnum', how='left')
+
+#rearrange cols so transcript column is first
+merged_df = merged_df[['transcript', 'resnum', 'resname', 'community']]
+
+merged_df.to_csv(args.output, header = True, index = False)
+
