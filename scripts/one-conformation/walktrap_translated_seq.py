@@ -39,7 +39,7 @@ def weight_to_clusters_translatedW_seq(f_input, f_output):
   dfW = pd.read_csv(f_input, names=["idx1", "idx2", "weight"])
 
   # Obtain # of nodes
-  n_nodes = int(dfW.iloc[-1]["idx1"])
+  n_nodes = int(dfW.iloc[-1]["idx2"])
 
   # For edges of which weight is <= 0, replace the edge weight with a tiny value
   dfW_translated = dfW.copy()
