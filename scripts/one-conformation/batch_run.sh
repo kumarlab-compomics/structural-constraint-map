@@ -6,6 +6,6 @@ home="${HOME}/structural-constraint-map/scripts/one-conformation"
 for i in $1/*.pdb
 do
 
-sbatch $home/run_ring_to_walktrap.sh $i $2 $3
+sbatch $home/run_ring_to_walktrap.sh $i $2 $3 $4
 
 done
