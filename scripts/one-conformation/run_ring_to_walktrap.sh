@@ -2,13 +2,13 @@
 #SBATCH -N 1 # Ensure that all cores are on one machine
 #SBATCH -c 1
 #SBATCH --mem=750M
-#SBATCH -t 0-00:20 # Runtime in D-HH:MM
+#SBATCH -t 0-00:15 # Runtime in D-HH:MM
 #SBATCH -J run_walktrap
 #SBATCH --output=/cluster/projects/kumargroup/isoform-constraint-map/structure/sbatch_out/%j.out
 
 #script to run constraint map steps for each isoform starting with RING to community visualization
 
-start=`date +%s`
+echo $(date)
 
 if [[ $3 == "beluga" ]]; then
 	source /home/nhanafi/projects/def-sushant/nhanafi/envs/structural_constraint/bin/activate
@@ -80,13 +80,25 @@ echo "Done re-writing B-factors"
 #cp to home directory so that I can scp it out
 #cp $project_dir/${isoform}_${2}_rewritten.pdb ~/files_to_scp/pdbs
 
+
+
+### GETTING RESIDUE LEVEL METRICS ###
+
+echo "Getting residue level metrics"
+python $home/get_residue_level_metrics_part1.py -c $project_dir/${isoform}_walktrap_output.txt -p $pdb -o $project_dir/${isoform}_residues.csv
+
+module load R/4.2.1
+Rscript $home/get_residue_level_metrics_part2.R $project_dir/${isoform}_walktrap_input.txt $project_dir/${isoform}_residues.csv $project_dir/${isoform}_all_residue_metrics.csv
+
+### WRITING TRANSCRIPT-LEVEL SUMMARY CSV ###
+
+echo "Writing summary csv"
+python $home/summarize_communities.py -c $project_dir/${isoform}_walktrap_output.txt -o $project_dir/${isoform}_summary.csv -p $pdb -i $project_dir/${isoform}_walktrap_input.txt -n $4
+echo "Done writing summary csv"  
+
+echo $(date +%T)
+
 ### EXIT STATUS CHECK ### from https://stackoverflow.com/questions/26675681/how-to-check-the-exit-status-using-an-if-statement
 EXITCODE=$?
 test $EXITCODE -eq 0 && echo "SUCCESS" || echo "ERROR";
 exit $EXITCODE
-
-end=`date +%s`
-runtime=$((end-start))
-echo "Runtime is ${runtime}"
-
-
