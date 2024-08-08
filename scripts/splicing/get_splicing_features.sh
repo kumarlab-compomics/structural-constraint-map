@@ -1,7 +1,7 @@
 #!/bin/bash
 #SBATCH -N 1 # Ensure that all cores are on one machine
 #SBATCH -c 1
-#SBATCH --mem=250M
+#SBATCH --mem=750M
 #SBATCH -t 0-00:05 # Runtime in D-HH:MM
 #SBATCH -J get_splicing_features
 #SBATCH --output=/cluster/projects/kumargroup/isoform-constraint-map/structure/sbatch_out_splicing/%j.out
@@ -11,6 +11,7 @@
 echo $(date)
 
 source ~/envs/clustering/bin/activate
+module load R/4.2.1
 
 pdb=$1
 
