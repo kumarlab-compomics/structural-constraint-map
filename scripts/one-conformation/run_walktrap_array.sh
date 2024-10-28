@@ -1,11 +1,10 @@
 #!/bin/bash
 #SBATCH -N 1 # Ensure that all cores are on one machine
 #SBATCH -c 1
-#SBATCH --mem=750M
-#SBATCH -t 0-00:15 # Runtime in D-HH:MM
+#SBATCH --mem=3G
+#SBATCH -t 0-00:20 # Runtime in D-HH:MM
 #SBATCH -J run_walktrap
-#SBATCH --open-mode=append
-#SBATCH --output=/cluster/projects/kumargroup/isoform-constraint-map/structure/sbatch_out/walktrap/%j_%a.out
+#SBATCH --output=/cluster/projects/kumargroup/isoform-constraint-map/structure/sbatch_out/walktrap/%j.out
 
 #script to run constraint map steps for each isoform starting with RING to community visualization
 
@@ -25,12 +24,12 @@ fi
 
 home="${HOME}/structural-constraint-map/scripts/one-conformation"
 
-ls -1 $1/*pdb > input.txt 
-readarray -t files < input.txt
-current=${files[$SLURM_ARRAY_TASK_ID-1]}
-echo $current
+#ls -1 $1/*pdb > input.txt 
+#readarray -t files < input.txt
+#current=${files[$SLURM_ARRAY_TASK_ID]}
+#echo $current
 
-file="$(basename "$current")"
+file="$(basename "$1")"
 isoform="${file%%.*}"
 enst=$(awk '{split($0, a, "[_.]"); print a[1]}' <<< "$file")
 gene=$(awk '{split($0, a, "[_.]"); print a[2]}' <<< "$file")
@@ -39,11 +38,11 @@ echo "Beginning processing for ${isoform}"
 
 if [[ $4 == "ensemble" ]]; then
   mkdir -p combined
-  python $home/combine_conformations.py -e $current -s colabfold/${enst}_${gene}* -o combined/${enst}_${gene}.pdb
+  python $home/combine_conformations.py -e $1 -s colabfold/${enst}_${gene}* -o combined/${enst}_${gene}.pdb
   pdb=combined/${enst}_${gene}.pdb
 
 elif [[ $4 == "single" ]]; then
-   pdb=$current
+   pdb=$1
 fi
 
 if [[ $2 == "bond_energy" ]]; then
