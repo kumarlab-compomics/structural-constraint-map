@@ -7,7 +7,7 @@ import numpy as np
 parser = argparse.ArgumentParser()
 parser.add_argument("-p", "--pdb", help = "pdb file")
 parser.add_argument("-o", "--output", help = "output file name")
-parser.add_argument("-c", "--cutoff", help = "distance cut-off in nm")
+parser.add_argument("-c", "--cutoff", type = float, help = "distance cut-off in nm")
 args = parser.parse_args()
 
 traj = md.load(args.pdb)
