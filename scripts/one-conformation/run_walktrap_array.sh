@@ -4,7 +4,7 @@
 #SBATCH --mem=3G
 #SBATCH -t 0-00:20 # Runtime in D-HH:MM
 #SBATCH -J run_walktrap
-#SBATCH --output=/cluster/projects/kumargroup/isoform-constraint-map/structure/sbatch_out/walktrap/%j.out
+#SBATCH --output=/cluster/projects/kumargroup/isoform-constraint-map/structure/sbatch_out/ensemble_walktrap/%j.out
 
 #script to run constraint map steps for each isoform starting with RING to community visualization
 
@@ -38,7 +38,9 @@ echo "Beginning processing for ${isoform}"
 
 if [[ $4 == "ensemble" ]]; then
   mkdir -p combined
-  python $home/combine_conformations.py -e $1 -s colabfold/${enst}_${gene}* -o combined/${enst}_${gene}.pdb
+  cat $1 | sed 's/^END$//' > combined/${enst}_${gene}.pdb
+  cat colabfold/${enst}_${gene}* | sed 's/MODEL     1/MODEL     50/' >> combined/${enst}_${gene}.pdb
+  #python $home/combine_conformations.py -e $1 -s colabfold/${enst}_${gene}* -o combined/${enst}_${gene}.pdb
   pdb=combined/${enst}_${gene}.pdb
 
 elif [[ $4 == "single" ]]; then
@@ -97,15 +99,29 @@ echo "Done re-writing B-factors"
 ### GETTING RESIDUE LEVEL METRICS ###
 
 echo "Getting residue level metrics"
-python $home/get_residue_level_metrics_part1.py -c $project_dir/${isoform}_walktrap_output.txt -p $pdb -o $project_dir/${isoform}_residues.csv
+
+outdir=/cluster/projects/kumargroup/isoform-constraint-map/metrics/ensemble_conformation_metrics/output
+mkdir -p $outdir/ensemble_conf_residue_level_metrics
+
+python $home/get_residue_level_metrics_part1_ENSEMBLE.py -c $project_dir/${isoform}_walktrap_output.txt -p colabfold/${enst}_${gene}* -e $pdb \
+	-o $project_dir/${isoform}_residues.csv
 
 module load R/4.2.1
-Rscript $home/get_residue_level_metrics_part2.R $project_dir/${isoform}_walktrap_input.txt $project_dir/${isoform}_residues.csv $project_dir/${isoform}_all_residue_metrics.csv
+
+single=/cluster/projects/kumargroup/isoform-constraint-map/structure/single_conf_community_detection
+
+Rscript $home/get_residue_level_metrics_part2_ENSEMBLE.R $project_dir/${isoform}_walktrap_input.txt $project_dir/${isoform}_residues.csv \
+        $single/$gene/$enst/${enst}_${gene}_surface_area_accessibility.csv \
+        $single/$gene/$enst/${enst}_${gene}_frustration_index.txt \
+	$outdir/ensemble_conf_residue_level_metrics/${isoform}_all_residue_metrics.csv
 
 ### WRITING TRANSCRIPT-LEVEL SUMMARY CSV ###
 
 echo "Writing summary csv"
-python $home/summarize_communities.py -c $project_dir/${isoform}_walktrap_output.txt -o $project_dir/${isoform}_summary.csv -p $pdb -i $project_dir/${isoform}_walktrap_input.txt -n $4
+
+mkdir -p $outdir/ensemble_conf_summary_metrics
+
+python $home/summarize_communities_ENSEMBLE.py -c $project_dir/${isoform}_walktrap_output.txt -o $outdir/ensemble_conf_summary_metrics/${isoform}_summary.csv -p $pdb -i $project_dir/${isoform}_walktrap_input.txt -n $4
 echo "Done writing summary csv"  
 
 echo $(date +%T)

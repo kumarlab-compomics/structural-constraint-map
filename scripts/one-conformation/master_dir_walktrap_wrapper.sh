@@ -1,3 +1,5 @@
+#!/bin/bash
+
 #CLI arg #1: directory with pdbs
 #CLI arg #2: bond_energy or contact (to serve as edge weights)
 #CLI arg #3: cluster name
@@ -8,7 +10,7 @@
 
 
 if [[ $4 == "ensemble" ]]; then
-	input=/cluster/projects/kumargroup/isoform-constraint-map/structure/combined_community_detection
+	input=/cluster/projects/kumargroup/isoform-constraint-map/structure/ensemble_community_detection
 elif [[ $4 == "single" ]]; then 
 	input=/cluster/projects/kumargroup/isoform-constraint-map/structure/single_conf_community_detection
 else
@@ -16,7 +18,7 @@ else
 fi
 
 home="${HOME}/structural-constraint-map/scripts/one-conformation"
-input=/cluster/projects/kumargroup/isoform-constraint-map/structure/combined_community_detection
+#input=/cluster/projects/kumargroup/isoform-constraint-map/structure/combined_community_detection
 
 
 #ls -1 $1/*pdb > input.txt #UNCOMMENT THIS IF THERE ARE ANY CHANGES TO THE INPUT DIRECTORY
