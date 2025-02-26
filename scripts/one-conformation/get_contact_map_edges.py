@@ -7,11 +7,18 @@ import numpy as np
 parser = argparse.ArgumentParser()
 parser.add_argument("-p", "--pdb", help = "pdb file")
 parser.add_argument("-o", "--output", help = "output file name")
+parser.add_argument("-c", "--cutoff", type = float, help = "distance cut-off in nm")
 args = parser.parse_args()
 
 traj = md.load(args.pdb)
 
-frame_contacts = ContactFrequency(traj,n_neighbors_ignored=0)
+# restrict to only alpha carbons
+alphas = traj.topology.select("protein and name == 'CA'")
+ca_traj = traj.atom_slice(alphas)
+
+cutoff = args.cutoff
+
+frame_contacts = ContactFrequency(ca_traj,n_neighbors_ignored=0, cutoff=cutoff)
 df = frame_contacts.residue_contacts.df
 
 df = df.fillna(0)

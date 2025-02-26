@@ -12,11 +12,11 @@ enst = args[3]
 frustration = paste(shQuote(df_f$FrstIndex), collapse=",")
 surface_area = paste(shQuote(df_sa$V2), collapse=",")
 
-frustration = gsub('^', '[', frustration)
-frustration = gsub('$', ']', frustration)
+frustration = gsub('^', '\"[', frustration)
+frustration = gsub('$', ']\"', frustration)
 
-surface_area = gsub('^', '[', surface_area)
-surface_area = gsub('$', ']', surface_area)
+surface_area = gsub('^', '\"[', surface_area)
+surface_area = gsub('$', ']\"', surface_area)
 
 df_final_frus = data.frame(enst, frustration)
 df_final_sa = data.frame(enst, surface_area)
