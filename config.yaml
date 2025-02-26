@@ -1,0 +1,13 @@
+run:
+    sequence_samples: sequence_samples.tsv
+    single_samples: single_samples.tsv
+    ensemble_samples: ensemble_samples.tsv
+    sequence_modality: false
+    single_structure_modality: true
+    ensemble_structure_modality: true
+    threshold: 0.6
+
+mtr_data:
+    gnomad_mutations_path: "/cluster/projects/kumargroup/isoform-constraint-map/MTR/sequence_all/input"
+    cadd_mutations_path: "/cluster/projects/kumargroup/isoform-constraint-map/CADD/filtered"
+    gnomad_coverage_path: "/cluster/projects/kumargroup/isoform-constraint-map/gnomAD_v4.1.0/coverage"
